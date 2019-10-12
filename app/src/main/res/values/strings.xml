@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">RescueMe</string>
 
@@ -14,6 +15,6 @@
     <string name="last_name_hint">Last Name</string>
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="signup">Sign Up</string>
-    <string name="agreement">By clicking <b>\"Sign Up\"</b> you\'re agreeing to the Rescue Me <b>Terms of Service and Privacy Police</b></string>
+    <string name="agreement">By clicking <b>\"Sign Up\"</b> you\'re agreeing to the Rescue Me <b>Terms of Service</b> and <b>Privacy Police</b>.</string>
 
 </resources>
