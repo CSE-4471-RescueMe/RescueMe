@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/White"
+    tools:context=".RegisterActivity">
+
+    <ImageView
+        android:id="@+id/register_logo"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/White"
+        android:contentDescription="@string/logo_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/rescueme_logo2" />
+
+    <EditText
+        android:id="@+id/first_name_prompt"
+        android:layout_width="373dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:drawableEnd="@drawable/ic_name"
+        android:drawableRight="@drawable/ic_name"
+        android:hint="@string/first_name_hint"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textColor="@color/LightGrey"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_logo" />
+
+    <EditText
+        android:id="@+id/last_name_prompt"
+        android:layout_width="373dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:drawableEnd="@drawable/ic_name"
+        android:drawableRight="@drawable/ic_name"
+        android:hint="@string/last_name_hint"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textColor="@color/LightGrey"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.181"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/first_name_prompt" />
+
+    <EditText
+        android:id="@+id/register_email_prompt"
+        android:layout_width="373dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:drawableEnd="@drawable/ic_email"
+        android:drawableRight="@drawable/ic_email"
+        android:hint="@string/email_hint"
+        android:importantForAutofill="no"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/LightGrey"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/last_name_prompt" />
+
+    <EditText
+        android:id="@+id/register_password_prompt"
+        android:layout_width="373dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:drawableEnd="@drawable/ic_password"
+        android:drawableRight="@drawable/ic_password"
+        android:hint="@string/password_hint"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:textColor="@color/LightGrey"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_email_prompt" />
+
+    <EditText
+        android:id="@+id/register_confirm_password_prompt"
+        android:layout_width="373dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:drawableEnd="@drawable/ic_password"
+        android:drawableRight="@drawable/ic_password"
+        android:hint="@string/confirm_password_hint"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:textColor="@color/LightGrey"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_password_prompt" />
+
+    <TextView
+        android:id="@+id/register_conditions_and_terms"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/agreement"
+        android:textAlignment="center"
+        android:textColor="@color/LightGrey"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/sign_up_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_confirm_password_prompt"
+        app:layout_constraintVertical_bias="0.658" />
+
+    <Button
+        android:id="@+id/sign_up_button"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/gradient"
+        android:text="@string/signup"
+        android:textAlignment="center"
+        android:textColor="@color/White"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
