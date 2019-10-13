@@ -1,15 +1,22 @@
 package com.android.rescueme;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
+
+    private TabLayout mTabLayout;
+    private TabItem mTabItemHome;
+    private TabItem mTabItemEmergency;
+    private TabItem mTabItemSettings;
+    private ViewPager mViewPager;
+    private PagerController mPagerController;
 
     private TextView mContactFullName;
     private TextView mContactEmail;
@@ -24,21 +31,19 @@ public class MainActivity extends AppCompatActivity {
         mContactEmail = findViewById(R.id.contact_email);
         mContactPhoneNumer = findViewById(R.id.contact_phone_number);
 
-        TabLayout tabLayout = findViewById(R.id.main_tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Home"));
-        tabLayout.addTab(tabLayout.newTab().setText("Emergency"));
-        tabLayout.addTab(tabLayout.newTab().setText("Settings"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        mTabLayout = findViewById(R.id.tab_layout);
+        mTabItemHome = findViewById(R.id.tab_home);
+        mTabItemEmergency = findViewById(R.id.tab_emergency);
+        mTabItemSettings = findViewById(R.id.tab_settings);
+        mViewPager = findViewById(R.id.view_pager);
 
-        final ViewPager viewPager = findViewById(R.id.main_view_pager);
-        final PagerAdapter adapter = new TabPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        mPagerController = new PagerController(getSupportFragmentManager(), mTabLayout.getTabCount());
+        mViewPager.setAdapter(mPagerController);
 
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+                mViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -51,5 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
     }
 }

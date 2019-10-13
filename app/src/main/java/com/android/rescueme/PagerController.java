@@ -5,26 +5,25 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-public class TabPagerAdapter extends FragmentPagerAdapter {
+public class PagerController extends FragmentPagerAdapter {
 
-    private int tabCount;
+    int tabCounts;
 
-    TabPagerAdapter(FragmentManager fm, int numberOfTabs) {
-        super(fm, numberOfTabs);
-        this.tabCount = numberOfTabs;
+    public PagerController(@NonNull FragmentManager fm, int tabCounts) {
+        super(fm, tabCounts);
+        this.tabCounts = tabCounts;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-
         switch (position) {
             case 0:
-                return new Tab1Fragment();
+                return new FragmentHome();
             case 1:
-                return new Tab2Fragment();
+                return new FragmentEmergency();
             case 2:
-                return new Tab3Fragment();
+                return new FragmentSettings();
             default:
                 return null;
         }
@@ -32,6 +31,6 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return tabCount;
+        return tabCounts;
     }
 }

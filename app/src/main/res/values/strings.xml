@@ -18,10 +18,13 @@
     <string name="agreement">By clicking <b>\"Sign Up\"</b> you\'re agreeing to the Rescue Me <b>Terms of Service</b> and <b>Privacy Police</b>.</string>
 
     <!--Fragments-->
-    <string name="home_fragment">Home</string>
-    <string name="emergency_fragment">Emergency Contact</string>
-    <string name="settings_fragment">Settings</string>
+    <string name="home_tab">Home</string>
+    <string name="emergency_tab">Emergency</string>
+    <string name="settings_tab">Settings</string>
     <string name="phone_number_hint">Phone Number</string>
     <string name="save">Save</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
