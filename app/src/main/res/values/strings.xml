@@ -17,4 +17,11 @@
     <string name="signup">Sign Up</string>
     <string name="agreement">By clicking <b>\"Sign Up\"</b> you\'re agreeing to the Rescue Me <b>Terms of Service</b> and <b>Privacy Police</b>.</string>
 
+    <!--Fragments-->
+    <string name="home_fragment">Home</string>
+    <string name="emergency_fragment">Emergency Contact</string>
+    <string name="settings_fragment">Settings</string>
+    <string name="phone_number_hint">Phone Number</string>
+    <string name="save">Save</string>
+
 </resources>

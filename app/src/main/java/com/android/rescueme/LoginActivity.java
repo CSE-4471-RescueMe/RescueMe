@@ -22,7 +22,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private static final String TAG = "LoginActivity";
 
-
     private FirebaseAuth mAuth;
     private EditText mEmailText;
     private EditText mPasswordText;
@@ -52,18 +51,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop() called");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() called");
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -81,7 +68,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void setUpProgressDialog() {
         mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage("Loading Rescue Me...");
         mProgressDialog.setCancelable(false);
     }
 
