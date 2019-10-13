@@ -61,6 +61,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
         mFirstName = findViewById(R.id.first_name_prompt);
         mLastName = findViewById(R.id.last_name_prompt);
         mEmailText = findViewById(R.id.register_email_prompt);
@@ -93,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             mEmailText.setError("Required.");
             valid = false;
         } else if (!email.contains("@")) {
-            mPasswordText.setError("Email does not meet requirements");
+            mEmailText.setError("Email does not meet requirements");
             valid = false;
         }
 
@@ -131,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     addUser.put("Last", l);
 
                     if (user != null && user.getEmail() != null) {
-                        db.collection("users").document(user.getEmail()).set(addUser);
+                        db.collection("Users").document(user.getEmail()).set(addUser);
                         UserProfileChangeRequest update = new UserProfileChangeRequest.Builder().setDisplayName(f + " " + l).build();
                         user.updateProfile(update);
                     }

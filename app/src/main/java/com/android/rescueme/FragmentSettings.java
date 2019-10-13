@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class FragmentSettings extends Fragment implements View.OnClickListener {
 
-    private View view;
     private FirebaseAuth mAuth;
 
     public FragmentSettings() {
@@ -24,8 +23,10 @@ public class FragmentSettings extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
-        view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.sign_out_button).setOnClickListener(this);
+        
         return view;
     }
 
