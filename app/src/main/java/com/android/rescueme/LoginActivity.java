@@ -1,9 +1,9 @@
 package com.android.rescueme;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,7 +26,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     private EditText mEmailText;
     private EditText mPasswordText;
-    private ProgressDialog mProgressDialog;
+    private AlertDialog mAlertDialog;
 
     @Override
     public void onStart() {
@@ -63,12 +64,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.login_button).setOnClickListener(this);
         findViewById(R.id.register_button).setOnClickListener(this);
 
-        setUpProgressDialog();
+        setUpProgressBar();
     }
 
-    public void setUpProgressDialog() {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCancelable(false);
+    public void setUpProgressBar() {
+        ProgressBar progressBar = (ProgressBar) getLayoutInflater().inflate(R.layout.progress_bar, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Loading app...");
+        builder.setCancelable(false);
+        builder.setView(progressBar);
+
+        mAlertDialog = builder.create();
     }
 
     private boolean validateForm() {
@@ -101,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.d(TAG, "signIn: " + email);
 
         if (!validateForm()) {
-            mProgressDialog.dismiss();
+            mAlertDialog.show();
             return;
         }
 
@@ -110,13 +117,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "Sign in success");
-                    mProgressDialog.dismiss();
+                    mAlertDialog.dismiss();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 } else {
                     Log.w(TAG, "Sign in failure", task.getException());
-                    mProgressDialog.dismiss();
+                    mAlertDialog.dismiss();
 
                     Toast toast = Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -126,15 +133,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-//    private void signOut() {
-//        mAuth.signOut();
-//    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_button:
-                mProgressDialog.show();
+                mAlertDialog.show();
                 signIn(mEmailText.getText().toString(), mPasswordText.getText().toString());
                 break;
             case R.id.register_button:
