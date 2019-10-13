@@ -8,15 +8,20 @@
     android:background="@color/White"
     tools:context=".FragmentSettings">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/hello_blank_fragment"
+    <ImageButton
+        android:id="@+id/sign_out_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00ffffff"
+        android:contentDescription="@string/exit_description"
+        android:scaleX="2"
+        android:scaleY="2"
+        android:src="@drawable/ic_exit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.844"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.891" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

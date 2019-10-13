@@ -23,8 +23,6 @@
     <string name="settings_tab">Settings</string>
     <string name="phone_number_hint">Phone Number</string>
     <string name="save">Save</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="exit_description">Sign Out Button</string>
 
 </resources>

@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class FragmentSettings extends Fragment {
+public class FragmentSettings extends Fragment implements View.OnClickListener {
 
     public FragmentSettings() {
         // Required empty public constructor
@@ -19,4 +19,8 @@ public class FragmentSettings extends Fragment {
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }
