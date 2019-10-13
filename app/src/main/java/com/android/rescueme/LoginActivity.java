@@ -126,10 +126,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void signOut() {
-        mAuth.signOut();
-    }
-
+//    private void signOut() {
+//        mAuth.signOut();
+//    }
 
     @Override
     public void onClick(View view) {
