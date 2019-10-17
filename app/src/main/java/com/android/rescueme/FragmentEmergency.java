@@ -3,14 +3,18 @@ package com.android.rescueme;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -20,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FragmentEmergency extends Fragment implements View.OnClickListener {
+    private static final String TAG = "FragmentEmergency";
 
     private EditText mFirstName;
     private EditText mLastName;
@@ -98,8 +103,19 @@ public class FragmentEmergency extends Fragment implements View.OnClickListener 
         emergencyContact.put("Phone Number", emergencyPhoneNumber);
 
         if (user != null && user.getEmail() != null) {
-            DocumentReference newGroupRef = db.collection("Users").document(user.getEmail()).collection("Emergency Contact").document();
-            newGroupRef.set(emergencyContact);
+            DocumentReference newGroupRef = db.collection("Users").document(user.getEmail()).collection("Emergency").document("contact");
+            newGroupRef.set(emergencyContact).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error writing document", e);
+                }
+            });
+
             clearFields();
         }
 

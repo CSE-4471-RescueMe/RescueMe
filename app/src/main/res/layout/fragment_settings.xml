@@ -8,6 +8,10 @@
     android:background="@color/White"
     tools:context=".FragmentSettings">
 
+<!--    User full name-->
+<!--    User email-->
+<!--    User picture-->
+
     <ImageButton
         android:id="@+id/sign_out_button"
         android:layout_width="wrap_content"
