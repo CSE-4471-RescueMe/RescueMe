@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ToggleButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -26,6 +27,9 @@ public class FragmentSettings extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.sign_out_button).setOnClickListener(this);
+
+        view.findViewById(R.id.sound_notification_button).setOnClickListener(this);
+        view.findViewById(R.id.location_notification_button).setOnClickListener(this);
         
         return view;
     }
