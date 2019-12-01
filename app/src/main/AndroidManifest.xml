@@ -16,6 +16,11 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".PopUpActivity"
+            android:label="@string/title_activity_pop_up"
+            android:theme="@style/AppTheme.NoActionBar" ></activity>
+
         <receiver android:name=".Emergency_Widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -30,6 +35,7 @@
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
