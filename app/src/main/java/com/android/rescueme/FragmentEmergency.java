@@ -84,7 +84,7 @@ public class FragmentEmergency extends Fragment implements View.OnClickListener 
         if (TextUtils.isEmpty(phone)) {
             mPhoneNumber.setError("Required.");
             valid = false;
-        } else if (phone.length() == 9) {
+        } else if (phone.length() != 10) {
             mPhoneNumber.setError("Phone Number does not meet requirements.");
             valid = false;
         }
