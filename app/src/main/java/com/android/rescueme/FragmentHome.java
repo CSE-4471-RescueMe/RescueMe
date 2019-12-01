@@ -1,11 +1,14 @@
 package com.android.rescueme;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.provider.Telephony;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,8 +86,11 @@ public class FragmentHome extends Fragment {
                 }
             });
         }
-
         return view;
+    }
+
+    public void sendMessage(View view) {
+        // placeholder since fragment_home.xml will have an error with onclick otherwise
     }
 
 }
