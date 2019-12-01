@@ -1,5 +1,6 @@
 package com.android.rescueme;
 
+import android.Manifest;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -10,12 +11,16 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.provider.MediaStore;
+import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -48,7 +53,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private String provider;
     private String finalAddress = "";
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 11;
+    private static final int MY_PERMISSION_SEND_SMS = 12;
+    final static int VIDEO_CAPTURED = 1;
     private AddressResultReceiver myResultReciever;
+
+    Uri uriVideo = null;
 
     private TextView mContactFullName;
     private TextView mContactEmail;
@@ -94,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         // Try to obtain user's location upon opening the app
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         tryToGetLocation();
+        tryToGetLocation();
 
     }
 
@@ -130,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         myResultReciever = new AddressResultReceiver(new android.os.Handler());
         startIntentService();
-        System.out.println(finalAddress);
+        System.out.println("finalAddress: " + finalAddress);
     }
 
     @Override
@@ -163,6 +173,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     // permission was granted
                     tryToGetLocation();
                 } else {
+                    // permission denied, either disable the location functionality that depends on this permission, or continue asking for permission.
+                    // We continually ask for permission since RescueMe needs to get the user's location so RescueMe can send the location to the user's emergency contact.
+                    //showAlert(getString(R.string.error), getString(R.string.message));
+                }
+            }
+            case MY_PERMISSION_SEND_SMS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    System.out.println("Permission granted to send sms!");
+                } else {
+                    System.out.println("Permission denied to send sms!");
                     // permission denied, either disable the location functionality that depends on this permission, or continue asking for permission.
                     // We continually ask for permission since RescueMe needs to get the user's location so RescueMe can send the location to the user's emergency contact.
                     //showAlert(getString(R.string.error), getString(R.string.message));
@@ -297,4 +320,66 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
+    private void requestSmsPermission() {
+        String permission = Manifest.permission.READ_SMS;
+        int grant = ContextCompat.checkSelfPermission(this, permission);
+        if (grant != PackageManager.PERMISSION_GRANTED) {
+            String[] permission_list = new String[1];
+            permission_list[0] = permission;
+            ActivityCompat.requestPermissions(this, permission_list, 1);
+        }
+    }
+
+    public void sendMessage(android.view.View view) {
+        // try to get permission to send sms
+        if (ContextCompat.checkSelfPermission( this,android.Manifest.permission.SEND_SMS ) != PackageManager.PERMISSION_GRANTED )
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String [] { android.Manifest.permission.SEND_SMS },
+                    MY_PERMISSION_SEND_SMS
+            );
+        }
+        else {
+            // We have permission to send sms
+            String message = "";
+            if (finalAddress.equals("")) {
+                message = "Help me at: http://maps.google.com/maps?saddr=" + latitude + "," + longitude;
+            } else {
+                message = "Help me at: " + finalAddress;
+            }
+            SmsManager smsManger = SmsManager.getDefault();
+            StringBuffer smsBody = new StringBuffer();
+            smsBody.append(Uri.parse(message));
+            android.telephony.SmsManager.getDefault().sendTextMessage("5554", null, smsBody.toString(), null, null);
+            sendVideo();
+        }
+    }
+
+    public void sendVideo() {
+        Intent captureVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        captureVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10);
+        captureVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        startActivityForResult(captureVideoIntent, VIDEO_CAPTURED);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == VIDEO_CAPTURED){
+                uriVideo = data.getData();
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra("address", "6505551212");
+                intent.putExtra("sms_body", "video: ");
+                intent.putExtra(Intent.EXTRA_STREAM, uriVideo);
+                //intent.setType("video/*");
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);}
+                //Toast.makeText(MainActivity.this, uriVideo.getPath(), Toast.LENGTH_LONG).show();
+            }
+        }else if(resultCode == RESULT_CANCELED){
+            uriVideo = null;
+            //Toast.makeText(MainActivity.this,"Cancelled!",Toast.LENGTH_LONG).show();
+        }
+    }
 }

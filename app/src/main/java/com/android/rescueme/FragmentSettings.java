@@ -43,4 +43,5 @@ public class FragmentSettings extends Fragment implements View.OnClickListener {
                 signOut();
         }
     }
+
 }
