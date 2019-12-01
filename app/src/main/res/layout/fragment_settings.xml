@@ -31,7 +31,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.293" />
 
     <TextView
         android:id="@+id/username"
@@ -51,7 +52,7 @@
         android:id="@+id/user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="milton.3@gmail.com"
+        android:text="milton.levy.3@gmail.com"
         android:textColor="@color/Black"
         android:textSize="25sp"
         android:textStyle="bold"
