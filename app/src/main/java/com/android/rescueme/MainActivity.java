@@ -1,6 +1,6 @@
 package com.android.rescueme;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +20,8 @@ import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,20 +30,15 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
-    private TabLayout mTabLayout;
-    private TabItem mTabItemHome;
-    private TabItem mTabItemEmergency;
-    private TabItem mTabItemSettings;
     private ViewPager mViewPager;
-    private PagerController mPagerController;
 
     // variables for getting location
     private double latitude;
@@ -55,33 +50,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 11;
     private static final int MY_PERMISSION_SEND_SMS = 12;
     final static int VIDEO_CAPTURED = 1;
-    private AddressResultReceiver myResultReciever;
+    private AddressResultReceiver myResultReceiver;
 
     Uri uriVideo = null;
-
-    private TextView mContactFullName;
-    private TextView mContactEmail;
-    private TextView mContactPhoneNumer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mContactFullName = findViewById(R.id.contact_name);
-        mContactEmail = findViewById(R.id.contact_email);
-        mContactPhoneNumer = findViewById(R.id.contact_phone_number);
+        TextView contactFullName = findViewById(R.id.contact_name);
+        TextView contactEmail = findViewById(R.id.contact_email);
+        TextView contactPhoneNumer = findViewById(R.id.contact_phone_number);
 
-        mTabLayout = findViewById(R.id.tab_layout);
-        mTabItemHome = findViewById(R.id.tab_home);
-        mTabItemEmergency = findViewById(R.id.tab_emergency);
-        mTabItemSettings = findViewById(R.id.tab_settings);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        TabItem tabItemHome = findViewById(R.id.tab_home);
+        TabItem tabItemEmergency = findViewById(R.id.tab_emergency);
+        TabItem tabItemSettings = findViewById(R.id.tab_settings);
         mViewPager = findViewById(R.id.view_pager);
 
-        mPagerController = new PagerController(getSupportFragmentManager(), mTabLayout.getTabCount());
-        mViewPager.setAdapter(mPagerController);
+        PagerController pagerController = new PagerController(getSupportFragmentManager(), tabLayout.getTabCount());
+        mViewPager.setAdapter(pagerController);
 
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
@@ -98,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         // Try to obtain user's location upon opening the app
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -110,14 +101,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onResume() {
         super.onResume();
-        if (ContextCompat.checkSelfPermission( this,android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED )
-        {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String [] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSION_ACCESS_FINE_LOCATION
             );
-        }
-        else {
+        } else {
             locationManager.requestLocationUpdates(provider, 400, 1, this);
         }
     }
@@ -138,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         longitude = lng;
         System.out.println("lat and long: " + lat + ", " + lng);
 
-        myResultReciever = new AddressResultReceiver(new android.os.Handler());
+        myResultReceiver = new AddressResultReceiver(new android.os.Handler());
         startIntentService();
         System.out.println("finalAddress: " + finalAddress);
     }
@@ -164,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSION_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -172,10 +161,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
                     tryToGetLocation();
-                } else {
-                    // permission denied, either disable the location functionality that depends on this permission, or continue asking for permission.
-                    // We continually ask for permission since RescueMe needs to get the user's location so RescueMe can send the location to the user's emergency contact.
-                    //showAlert(getString(R.string.error), getString(R.string.message));
                 }
             }
             case MY_PERMISSION_SEND_SMS: {
@@ -195,39 +180,41 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     // Checks if the user has provided permission to use their location. If not, then request the user's permission. If permission has been granted, obtain the user's location.
-    public void tryToGetLocation () {
-        if (ContextCompat.checkSelfPermission( this,android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED )
-        {
+    public void tryToGetLocation() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String [] { android.Manifest.permission.ACCESS_FINE_LOCATION },
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSION_ACCESS_FINE_LOCATION
             );
-        }
-        else {
+        } else {
             // We have permission to obtain user's location
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_COARSE);
             provider = locationManager.getBestProvider(criteria, false);
-            location = locationManager.getLastKnownLocation(provider);
+
+            if (provider != null) {
+                location = locationManager.getLastKnownLocation(provider);
+            }
 
             if (location != null) {
                 onLocationChanged(location);
-            }
-            else {
-                locationManager.requestLocationUpdates(provider, 1000, 0, this);
+            } else {
+                if (provider != null) {
+                    locationManager.requestLocationUpdates(provider, 1000, 0, this);
+                }
             }
         }
     }
 
-    protected void startIntentService(){
-        Intent intent = new Intent(this,FetchAddressIntentService.class);
-        intent.putExtra(FetchAddressIntentService.Constants.RECEIVER,myResultReciever);
-        intent.putExtra(FetchAddressIntentService.Constants.LOCATION_DATA_EXTRA,location);
+    protected void startIntentService() {
+        Intent intent = new Intent(this, FetchAddressIntentService.class);
+        intent.putExtra(FetchAddressIntentService.Constants.RECEIVER, myResultReceiver);
+        intent.putExtra(FetchAddressIntentService.Constants.LOCATION_DATA_EXTRA, location);
         startService(intent);
     }
 
     class AddressResultReceiver extends ResultReceiver {
-        public AddressResultReceiver(Handler handler) {
+        AddressResultReceiver(Handler handler) {
             super(handler);
         }
 
@@ -244,22 +231,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             if (finalAddress == null) {
                 finalAddress = "";
             }
-
-            // Show a toast message if an address was found.
-            if (resultCode == FetchAddressIntentService.Constants.SUCCESS_RESULT) {
-                //showToast(getString(R.string.address_found));
-            }
-
         }
     }
 
     public static class FetchAddressIntentService extends IntentService {
         ResultReceiver myReceiver;
-        public FetchAddressIntentService(){
+
+        public FetchAddressIntentService() {
             super("Fetching address");
 
         }
-
 
         @Override
         protected void onHandleIntent(@Nullable Intent intent) {
@@ -270,76 +251,61 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             myReceiver = intent.getParcelableExtra(Constants.RECEIVER);
 
             List<Address> address = null;
-            try{
-                address = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
-            }
-            catch(Exception e){
+            try {
+                if (location != null) {
+                    address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                }
+            } catch (Exception e) {
                 // Calling toast within an intent is problematic
                 // Toast.makeText(this,e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
             //Handle the case when there is no location found
-            if(address == null || address.size() == 0){
+            if (address == null || address.size() == 0) {
                 // Calling toast within an intent is problematic
                 //Toast.makeText(this, "No address found", Toast.LENGTH_LONG).show();
-                deliverResulttoReciever(Constants.FAILURE_RESULT,"No address Found");
-            }
-            else{
+                deliverResultToReceiver(Constants.FAILURE_RESULT, "No address Found");
+            } else {
                 Address currentAddress = address.get(0);
                 ArrayList<String> addressFragment = new ArrayList<String>();
 
                 //Fetch the address lines using getAddressLine
                 //join them and send them to the thread
-                for(int i = 0;i<=currentAddress.getMaxAddressLineIndex();i++)
-                {
+                for (int i = 0; i <= currentAddress.getMaxAddressLineIndex(); i++) {
                     addressFragment.add(currentAddress.getAddressLine(i));
                 }
-                deliverResulttoReciever(Constants.SUCCESS_RESULT, TextUtils.join(System.getProperty("line.saparator"),addressFragment));
+                deliverResultToReceiver(Constants.SUCCESS_RESULT, TextUtils.join(Objects.requireNonNull(System.getProperty("line.saparator")), addressFragment));
             }
 
 
         }
 
-        private void deliverResulttoReciever(int resultCode, String message) {
+        private void deliverResultToReceiver(int resultCode, String message) {
             Bundle bundle = new Bundle();
-            bundle.putString(Constants.RESULT_DATA_KEY,message);
-            myReceiver.send(resultCode,bundle);
+            bundle.putString(Constants.RESULT_DATA_KEY, message);
+            myReceiver.send(resultCode, bundle);
         }
 
-        public final class Constants {
-            public static final int SUCCESS_RESULT = 0;
-            public static final int FAILURE_RESULT = 1;
-            public static final String PACKAGE_NAME =
-                    "com.google.android.gms.location.sample.locationaddress";
-            public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
-            public static final String RESULT_DATA_KEY = PACKAGE_NAME +
-                    ".RESULT_DATA_KEY";
-            public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
-                    ".LOCATION_DATA_EXTRA";
+        final class Constants {
+            static final int SUCCESS_RESULT = 0;
+            static final int FAILURE_RESULT = 1;
+            static final String PACKAGE_NAME = "com.google.android.gms.location.sample.locationaddress";
+            static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
+            static final String RESULT_DATA_KEY = PACKAGE_NAME + ".RESULT_DATA_KEY";
+            static final String LOCATION_DATA_EXTRA = PACKAGE_NAME + ".LOCATION_DATA_EXTRA";
         }
 
     }
 
-    private void requestSmsPermission() {
-        String permission = Manifest.permission.READ_SMS;
-        int grant = ContextCompat.checkSelfPermission(this, permission);
-        if (grant != PackageManager.PERMISSION_GRANTED) {
-            String[] permission_list = new String[1];
-            permission_list[0] = permission;
-            ActivityCompat.requestPermissions(this, permission_list, 1);
-        }
-    }
-
+    @SuppressLint("UnlocalizedSms")
     public void sendMessage(android.view.View view) {
         // try to get permission to send sms
-        if (ContextCompat.checkSelfPermission( this,android.Manifest.permission.SEND_SMS ) != PackageManager.PERMISSION_GRANTED )
-        {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String [] { android.Manifest.permission.SEND_SMS },
+                    new String[]{android.Manifest.permission.SEND_SMS},
                     MY_PERMISSION_SEND_SMS
             );
-        }
-        else {
+        } else {
             // We have permission to send sms
             String message = "";
             if (finalAddress.equals("")) {
@@ -365,8 +331,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            if(requestCode == VIDEO_CAPTURED){
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == VIDEO_CAPTURED) {
                 uriVideo = data.getData();
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.putExtra("address", "6505551212");
@@ -374,10 +341,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 intent.putExtra(Intent.EXTRA_STREAM, uriVideo);
                 //intent.setType("video/*");
                 if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);}
+                    startActivity(intent);
+                }
                 //Toast.makeText(MainActivity.this, uriVideo.getPath(), Toast.LENGTH_LONG).show();
             }
-        }else if(resultCode == RESULT_CANCELED){
+        } else if (resultCode == RESULT_CANCELED) {
             uriVideo = null;
             //Toast.makeText(MainActivity.this,"Cancelled!",Toast.LENGTH_LONG).show();
         }

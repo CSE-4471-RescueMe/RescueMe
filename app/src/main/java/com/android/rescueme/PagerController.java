@@ -7,9 +7,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 public class PagerController extends FragmentPagerAdapter {
 
-    int tabCounts;
+    private int tabCounts;
 
-    public PagerController(@NonNull FragmentManager fm, int tabCounts) {
+    PagerController(@NonNull FragmentManager fm, int tabCounts) {
         super(fm, tabCounts);
         this.tabCounts = tabCounts;
     }
